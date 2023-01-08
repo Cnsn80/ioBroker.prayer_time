@@ -1,0 +1,113 @@
+{
+	"common": {
+		"name": "prayer_time",
+		"version": "0.0.1",
+		"news": {
+			"0.0.1": {
+				"en": "initial release",
+				"de": "Erstveröffentlichung",
+				"ru": "Начальная версия",
+				"pt": "lançamento inicial",
+				"nl": "Eerste uitgave",
+				"fr": "Première version",
+				"it": "Versione iniziale",
+				"es": "Versión inicial",
+				"pl": "Pierwsze wydanie",
+				"zh-cn": "首次出版"
+			}
+		},
+		"title": "Islamic Prayer Times",
+		"titleLang": {
+			"en": "Islamic Prayer Times",
+			"de": "Islamic Prayer Times",
+			"ru": "Islamic Prayer Times",
+			"pt": "Islamic Prayer Times",
+			"nl": "Islamic Prayer Times",
+			"fr": "Islamic Prayer Times",
+			"it": "Islamic Prayer Times",
+			"es": "Islamic Prayer Times",
+			"pl": "Islamic Prayer Times",
+			"zh-cn": "Islamic Prayer Times"
+		},
+		"desc": {
+			"en": "Islamische Gebetszeiten",
+			"de": "Islamische Gebetszeiten",
+			"ru": "Islamische Gebetszeiten",
+			"pt": "Islamische Gebetszeiten",
+			"nl": "Islamische Gebetszeiten",
+			"fr": "Islamische Gebetszeiten",
+			"it": "Islamische Gebetszeiten",
+			"es": "Islamische Gebetszeiten",
+			"pl": "Islamische Gebetszeiten",
+			"zh-cn": "Islamische Gebetszeiten"
+		},
+		"authors": [
+			"Cnsn80 <Cengiz1980@gmx.de>"
+		],
+		"keywords": [
+			"Prayer Time",
+			"Adhan",
+			"Ezan",
+			"Ethan",
+			"Islam",
+			"Gebetsruf"
+		],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "main.js",
+		"icon": "prayer_time.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/Cnsn80/ioBroker.prayer_time/main/admin/prayer_time.png",
+		"readme": "https://github.com/Cnsn80/ioBroker.prayer_time/blob/main/README.md",
+		"loglevel": "info",
+		"mode": "daemon",
+		"type": "general",
+		"compact": true,
+		"connectionType": "cloud",
+		"dataSource": "poll",
+		"adminUI": {
+			"config": "materialize"
+		},
+		"dependencies": [
+			{
+				"js-controller": ">=3.3.22"
+			}
+		],
+		"globalDependencies": [
+			{
+				"admin": ">=5.0.0"
+			}
+		]
+	},
+	"native": {
+		"Sabah": "",
+		"Ögle": "",
+		"ikindi": "",
+		"Aksam": "",
+		"Yatsi": ""
+	},
+	"objects": [],
+	"instanceObjects": [
+		{
+			"_id": "info",
+			"type": "channel",
+			"common": {
+				"name": "Information"
+			},
+			"native": {}
+		},
+		{
+			"_id": "info.connection",
+			"type": "state",
+			"common": {
+				"role": "indicator.connected",
+				"name": "Device or service connected",
+				"type": "boolean",
+				"read": true,
+				"write": false,
+				"def": false
+			},
+			"native": {}
+		}
+	]
+}

@@ -1,0 +1,76 @@
+{
+	"expert": "yes",
+	"cli": false,
+	"adapterName": "prayer_time",
+	"title": "Islamic Prayer Times",
+	"description": "Islamische Gebetszeiten",
+	"keywords": [
+		"Prayer Time",
+		"Adhan",
+		"Ezan",
+		"Ethan",
+		"Islam",
+		"Gebetsruf"
+	],
+	"contributors": "",
+	"icon": {
+		"data": "data:image/png;base64,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",
+		"extension": "png"
+	},
+	"features": [
+		"adapter"
+	],
+	"adminFeatures": [],
+	"type": "general",
+	"startMode": "daemon",
+	"connectionType": "cloud",
+	"dataSource": "poll",
+	"connectionIndicator": "yes",
+	"adapterSettings": [
+		{
+			"key": "Sabah",
+			"inputType": "text",
+			"defaultValue": ""
+		},
+		{
+			"key": "Ögle",
+			"inputType": "text",
+			"defaultValue": ""
+		},
+		{
+			"key": "ikindi",
+			"inputType": "text",
+			"defaultValue": ""
+		},
+		{
+			"key": "Aksam",
+			"inputType": "text",
+			"defaultValue": ""
+		},
+		{
+			"key": "Yatsi",
+			"inputType": "text",
+			"defaultValue": ""
+		}
+	],
+	"language": "JavaScript",
+	"nodeVersion": "14",
+	"adminUi": "html",
+	"releaseScript": "yes",
+	"indentation": "Tab",
+	"quotes": "double",
+	"es6class": "yes",
+	"tools": [
+		"ESLint",
+		"type checking"
+	],
+	"i18n": "JSON",
+	"authorName": "Cnsn80",
+	"authorGithub": "Cnsn80",
+	"authorEmail": "Cengiz1980@gmx.de",
+	"gitRemoteProtocol": "HTTPS",
+	"license": "MIT License",
+	"dependabot": "yes",
+	"target": "github",
+	"creatorVersion": "2.3.0"
+}
