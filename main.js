@@ -33,6 +33,34 @@ class PrayerTime extends utils.Adapter {
 	 */
 	async onReady() {
 		// Initialize your adapter here
+const prayerTimes = require('prayer-times');
+
+function getPrayerTimes() {
+  // Benutzereingabe für Breiten- und Längengrad abrufen
+  const latitude = readLatitudeFromUserInput();
+  const longitude = readLongitudeFromUserInput();
+
+  // Konfigurieren der Gebetszeiten-Berechnung
+  const config = {
+    method: 'MWL',
+    latitude: latitude,
+    longitude: longitude,
+    timeZone: 'Europe/Berlin'
+  };
+
+  // Abrufen der Gebetszeiten für das aktuelle Datum
+  const times = prayerTimes.getTimes(new Date(), config);
+
+  // Setzen des Datenpunkts mit den Gebetszeiten
+  setState('islamic.prayer.fajr', times.fajr);
+  setState('islamic.prayer.dhuhr', times.dhuhr);
+  setState('islamic.prayer.asr', times.asr);
+  setState('islamic.prayer.maghrib', times.maghrib);
+  setState('islamic.prayer.isha', times.isha);
+}
+
+// Aufrufen der Funktion beim Start des Adapters
+getPrayerTimes();
 
 		// Reset the connection indicator during startup
 		this.setState("info.connection", false, true);
