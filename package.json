@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.7",
-     "prayer-times": "^3.1.0"
+     "prayer-times": "^3.1.0",
+     "request": "^2.88.0"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^3.5.9",
@@ -53,26 +54,9 @@
     "typescript": "~4.6.4"
   },
   "main": "main.js",
- "files": [
-    "admin{,/!(src)/**}/!(tsconfig|tsconfig.*|.eslintrc).json",
-    "admin{,/!(src)/**}/*.{html,css,png,svg,jpg,js}",
-    "lib/",
-    "www/",
-    "io-package.json",
-    "LICENSE",
-    "main.js"
-  ],
 
   "scripts": {
-    "test:js": "mocha --config test/mocharc.custom.json \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",
-    "test:package": "mocha test/package --exit",
-    "test:integration": "mocha test/integration --exit",
-    "test": "npm run test:js && npm run test:package",
-    "check": "tsc --noEmit -p tsconfig.check.json",
-    "lint": "eslint .",
-    "translate": "translate-adapter",
-    "release": "release-script",
-    "start": "node index.js"
+   "start": "node main.js"
   },
   "bugs": {
     "url": "https://github.com/Cnsn80/ioBroker.prayer_time/issues"
