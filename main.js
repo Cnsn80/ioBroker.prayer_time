@@ -7,7 +7,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
-
+const request = require('request-promise-native');
 // Load your modules here, e.g.:
 // const fs = require("fs");
 
@@ -17,17 +17,14 @@ class PrayerTime extends utils.Adapter {
 	 * @param {Partial<utils.AdapterOptions>} [options={}]
 	 */
 	constructor(options) {
-		super({
-			...options,
-			name: "prayer_time",
-		});
+		super({...options, name: "prayer_time",});
 		this.on("ready", this.onReady.bind(this));
 		this.on("stateChange", this.onStateChange.bind(this));
 		// this.on("objectChange", this.onObjectChange.bind(this));
 		// this.on("message", this.onMessage.bind(this));
 		this.on("unload", this.onUnload.bind(this));
 	}
-
+module.exports = PrayerTime;
 	/**
 	 * Is called when databases are connected and adapter received configuration.
 	 */
