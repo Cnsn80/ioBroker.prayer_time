@@ -33,30 +33,101 @@ class PrayerTime extends utils.Adapter {
 	 */
 	async onReady() {
 		// Initialize your adapter here
-const prayerTimes = require('prayer-times');
+const request = require('request');
 
-function getPrayerTimes() {
-  // Benutzereingabe für Breiten- und Längengrad abrufen
-  const latitude = readLatitudeFromUserInput();
-  const longitude = readLongitudeFromUserInput();
+// Set up your adapter using the iobroker.Adapter constructor
+class MyAdapter extends iobroker.Adapter {
+    constructor(options) {
+        super(options);
+        this.on('ready', this.onReady.bind(this));
+        this.on('stateChange', this.onStateChange.bind(this));
+        this.on('unload', this.onUnload.bind(this));
+    }
 
-  // Konfigurieren der Gebetszeiten-Berechnung
-  const config = {
-    method: 'MWL',
-    latitude: latitude,
-    longitude: longitude,
-    timeZone: 'Europe/Berlin'
-  };
+    // This function is called when the adapter is first loaded
+    onReady() {
+        // Set the state of the adapter
+        this.setState('info.connection', true, true);
+        // Start the timer to fetch the prayer times every day
+        this.fetchPrayerTimes();
+        this.timer = setInterval(this.fetchPrayerTimes.bind(this), 86400 * 1000);
+    }
 
-  // Abrufen der Gebetszeiten für das aktuelle Datum
-  const times = prayerTimes.getTimes(new Date(), config);
+    // This function is called when the adapter is being unloaded
+    onUnload(callback) {
+        try {
+            clearInterval(this.timer);
+            this.setState('info.connection', false, true);
+            callback();
+        } catch (e) {
+            callback();
+        }
+    }
 
-  // Setzen des Datenpunkts mit den Gebetszeiten
-  setState('islamic.prayer.fajr', times.fajr);
-  setState('islamic.prayer.dhuhr', times.dhuhr);
-  setState('islamic.prayer.asr', times.asr);
-  setState('islamic.prayer.maghrib', times.maghrib);
-  setState('islamic.prayer.isha', times.isha);
+    // This function is called when the state of the adapter changes
+    onStateChange(id, state) {
+        if (state) {
+            // The state has changed, do something here
+        }
+    }
+
+    // This function fetches the prayer times from the API and updates the states
+    fetchPrayerTimes() {
+        // Set the city and country for which you want to get the prayer times
+        const city = 'Berlin';
+        const country = 'Germany';
+
+        // Set the API endpoint and your API key
+        const endpoint = `http://api.aladhan.com/v1/calendarByCity?city=${city}&country=${country}&method=2`;
+        const apiKey = 'your-api-key-here';
+
+        // Set the headers for the HTTP request
+        const headers = {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        };
+
+        // Send the HTTP request to the API
+        request({ url: endpoint, headers: headers }, (error, response, body) => {
+            if (error) {
+                // There was an error, set the states accordingly
+                this.setState('error', error.message, true);
+                this.setState('info.connection', false, true);
+                return;
+            }
+
+            // Parse the response from the API
+            const data = JSON.parse(body);
+            if (data.code !== 200) {
+                // There was an error, set the states accordingly
+                this.setState('error', data.status, true);
+                this.setState('info.connection', false, true);
+                return;
+            }
+            // Extract the prayer times from the response
+            const fajr = data.data[0].timings.Fajr;
+            const dhuhr = data.data[0].timings.Dhuhr;
+            const asr = data.data[0].timings.Asr;
+            const maghrib = data.data[0].timings.Maghrib;
+            const isha = data.data[0].timings.Isha;
+
+            // Set the states for the prayer times
+            this.setState('prayerTimes.fajr', fajr, true);
+            this.setState('prayerTimes.dhuhr', dhuhr, true);
+            this.setState('prayerTimes.asr', asr, true);
+            this.setState('prayerTimes.maghrib', maghrib, true);
+            this.setState('prayerTimes.isha', isha, true);
+
+            // Set the state to indicate a successful connection
+            this.setState('info.connection', true, true);
+        });
+    }
+}
+
+// Export the adapter
+module.exports = MyAdapter;
+
+
 }
 
 // Aufrufen der Funktion beim Start des Adapters
