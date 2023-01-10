@@ -1,90 +1,129 @@
-'use strict';
+// Import the necessary modules and libraries
+const Aladhan = require('aladhan');
+const ioBroker = require('iobroker');
 
-const request = require('request-promise-native');
-const utils = require('@iobroker/adapter-core');
+// Initialize the Aladhan API client
+const aladhan = new Aladhan();
 
-class PrayerTime extends utils.Adapter {
-    constructor(options) {
-        super({...options, name: 'prayer_time'});
-        this.on('ready', this.onReady.bind(this));
-        this.on('stateChange', this.onStateChange.bind(this));
-        this.on('unload', this.onUnload.bind(this));
+// Initialize the iobroker adapter
+const adapter = new ioBroker.Adapter('iobroker.aladhan');
 
-        this.log.info('constructor');
-    }
+// Define the location for which to retrieve prayer times
+const location = {
+    latitude: 37.788022,
+    longitude: -122.399797,
+};
 
-    async onReady() {
-        // Create input fields for city, state, and method
-        await this.setObjectAsync('city', {
-            type: 'state',
-            common: {
-                name: 'City',
-                type: 'string',
-                role: 'input',
-                read: true,
-                write: true
-            },
-            native: {}
+// Define the method used to calculate prayer times
+const method = 'ISNA';
+
+// Define the options for the prayer time calculations
+const options = {
+    school: 0,
+    midnightMode: 0,
+    latitudeAdjustment: 0,
+};
+
+// When the adapter is ready
+adapter.on('ready', () => {
+    // Create the input fields for location
+    adapter.createDevice('location', {
+        common: {
+            name: 'Location',
+            type: 'location'
+        },
+        native: {},
+    });
+
+    // Create the input field for method
+    adapter.createDevice('method', {
+        common: {
+            name: 'Method',
+            type: 'string',
+            role: 'value',
+            states: ['ISNA','MWL','Makkah','Egypt','Karachi','Tehran','Jafari'],
+            def: 'ISNA',
+        },
+        native: {},
+    });
+
+    // Create the input field for options
+    adapter.createDevice('options', {
+        common: {
+            name: 'Options',
+            type: 'string',
+            role: 'value',
+            states: ['school','midnightMode','latitudeAdjustment'],
+            def: '',
+        },
+        native: {},
+    });
+
+    // Define a function to retrieve prayer times
+    function getPrayerTimes() {
+        // Read the current value of the location input field
+        adapter.get
+
+    // Define a function to retrieve prayer times
+    function getPrayerTimes() {
+            aladhan.timings(location, method, options)
+        .then(prayerTimes => {
+            // Output the prayer times to the iobroker datapoints
+            adapter.setObject('fajr', {
+                type: 'state',
+                common: {
+                    name: 'Fajr',
+                    type: 'string',
+                    role: 'prayer time',
+                    read: true,
+                    write: false,
+                },
+                native: {},
+            });
+            adapter.setState('fajr', prayerTimes.data.timings.Fajr);
+
+            adapter.setObject('dhuhr', {
+                type: 'state',
+                common: {
+                    name: 'Dhuhr',
+                    type: 'string',
+                    role: 'prayer time',
+                    read: true,
+                    write: false,
+                },
+                native: {},
+            });
+            adapter.setState('dhuhr', prayerTimes.data.timings.Dhuhr);
+
+            adapter.setObject('asr', {
+                type: 'state',
+                common: {
+                    name: 'Asr',
+                    type: 'string',
+                    role: 'prayer time',
+                    read: true,
+                    write: false,
+                },
+                native: {},
+            });
+            adapter.setState('asr', prayerTimes.data.timings.Asr);
+            // Repeat for other prayer times
+            // ...
+        })
+        .catch(error => {
+            // Handle any errors that occur during the API call
+            adapter.log.error(error);
         });
-        await this.setObjectAsync('state', {
-            type: 'state',
-            common: {
-                name: 'State/Country',
-                type: 'string',
-                role: 'input',
-                read: true,
-                write: true
-            },
-            native: {}
-        });
-        await this.setObjectAsync('method', {
-            type: 'state',
-            common: {
-                name: 'Method',
-                type: 'number',
-                role: 'input',
-                read: true,
-                write: true
-            },
-            native: {}
-        });
-        this.log.info('Input fields created');
+
     }
 
-    async onStateChange(id, state) {
-        if (id === this.namespace + '.city' || id === this.namespace + '.state' || id === this.namespace + '.method') {
-            this.log.info(`Input field ${id} changed to ${state.val}`);
-            const city = this.getState('city').val;
-            const state = this.getState('state').val;
-            const method = this.getState('method').val;
+    // Retrieve the prayer times on adapter start and every 24 hours
+    getPrayerTimes();
+    setInterval(getPrayerTimes, 24 * 60 * 60 * 1000);
+});
 
-            if (city && state && method) {
-                this.log.info(`Getting prayer times for ${city}, ${state} using method ${method}`);
-                try {
-                    const times = await this.getPrayerTimes(city, state, method);
-                    this.log.info('Prayer times successfully retrieved:');
-                    this.log.info(times);
-                } catch (error) {
-                    this.log.error(`Error retrieving prayer times: ${error}`);
-                }
-            }
-        }
-    }
-
-    async onUnload(callback) {
-        try {
-            // Perform cleanup tasks here...
-            callback();
-        } catch (e) {
-            callback();
-        }
-    }
-    
-    async getPrayerTimes(city, state, method) {
-        // Set default method to '2' (Islamic Society of North America) if not provided
-        method = method || '2';
-
-        // Build request options
-        const options = {
-            method: 'GET',
-            uri
+// When the adapter is stopped
+adapter.on('unload', callback => {
+    // Perform any necessary cleanup operations before stopping the adapter
+    callback();
+});
